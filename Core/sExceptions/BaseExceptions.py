@@ -11,6 +11,7 @@ from Core.Utils.LogUtils import LogUtils
 
 logUtils = LogUtils()
 
+
 class BaseExceptions(Exception):
     global logUtils
 

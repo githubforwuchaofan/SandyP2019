@@ -7,8 +7,6 @@ _desc: //ToDo
 """
 
 import re
-from Core.sExceptions.HttpExceptions import HttpParameterError
-
 text_extractor_regexp_compile = re.compile(r".*\(.*\).*")
 
 
@@ -32,23 +30,14 @@ class ResponseObject(object):
             'body': self.resp_body
         }
 
-    def validate(self, validators, variables_mapping):
-        for validator_dict in validators:
-
-            check_item = validator_dict.get("check")
-            if not check_item:
-                HttpParameterError("invalid check item in testcase validators!")
-
-            if "expected" not in validator_dict:
-                raise HttpParameterError("expected item missed in testcase validators!")
-
-            expected = validator_dict.get("expected")
-            comparator = validator_dict.get("comparator", "eq")
-
-            if check_item in variables_mapping:
-                validator_dict["actual_value"] = variables_mapping[check_item]
-            else:
-                pass
+    def validate(self, validators):
+        """
+        验证response
+        :param validators: type：list  format:{"comparator": "not", "route": "responseData.feed", "excepted": False}
+        :return:
+        """
+        for validator in validators:
+            pass
 
         return True
 
