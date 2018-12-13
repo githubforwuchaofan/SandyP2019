@@ -16,9 +16,6 @@ class PathUtil(object):
         if not os.path.exists(_dir):
             os.mkdir(_dir)
 
-    # def touch(self, file_path):
-    #     open(file_path)
-
     @classmethod
     def deep_mkdir(cls, _dir):
         if not os.path.isdir(_dir):

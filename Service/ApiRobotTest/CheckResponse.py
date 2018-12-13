@@ -7,10 +7,18 @@ _desc: //ToDo
 """
 
 import re
+
+from Core.Utils.ComparatorUtil import ComparatorUtil
+from Core.Utils.HttpUtils import HttpUtils
+from Core.Utils.LogUtils import LogUtils
+from Core.Utils.ParserUtil import ParserJsonUtil
+
 text_extractor_regexp_compile = re.compile(r".*\(.*\).*")
 
+logUtils = LogUtils()
 
-class ResponseObject(object):
+
+class CheckResponse(object):
 
     def __init__(self, resp_obj):
         self.resp_obj = resp_obj
@@ -33,12 +41,25 @@ class ResponseObject(object):
     def validate(self, validators):
         """
         验证response
-        :param validators: type：list  format:{"comparator": "not", "route": "responseData.feed", "excepted": False}
+        :param validators: type：list  format:{"symbol": "not", "value": "responseData.feed", "excepted": False}
         :return:
         """
         for validator in validators:
-            pass
+            route = validator.get("value")
 
-        return True
+            logUtils.info("根据路径校验")
+            check_item = ParserJsonUtil.query_json(route, self.resp_body.replace('\n', ''))
+
+            ComparatorUtil(
+                _check_item=check_item,
+                _symbol=validator.get('symbol'),
+                _excepted=validator.get('excepted')
+            ).check()
+
+
+if __name__ == "__main__":
+    req = HttpUtils.send('http://gongyu.qunar.com')
+    CheckResponse(req).validate([{"symbol": ">", "expected": 100, "value": ''}])
+
 
 

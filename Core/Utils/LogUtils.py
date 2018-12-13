@@ -16,7 +16,9 @@ class LogUtils(object):
     def __init__(self):
         logging.basicConfig(
             level=logging.INFO,
-            format='%(asctime)s %(levelname)s %(name)s: %(message)s'
+            format='%(asctime)s %(levelname)s %(name)s: %(message)s',
+            # filemode='a',
+            # filename='ApiRobotTest.log'
         )
         self.handler = logging.StreamHandler()
         self.logger = logging.getLogger(__name__)

@@ -5,12 +5,14 @@ _author: wcf
 _date: 2018/12/11-下午4:18
 _desc: //ToDo
 """
-import json
 
 from requests.structures import CaseInsensitiveDict
 
+from Core.Utils.LogUtils import LogUtils
 from Core.sExceptions.DictExceptions import DictIsEmptyError, KeyNotFoundError, JsonFormatError
 
+
+logUtils = LogUtils()
 
 class ParserIniUtil(object):
     def __init__(self):
@@ -36,6 +38,8 @@ class ParserYamlUtil(object):
 class ParserJsonUtil(object):
     @classmethod
     def query_json(cls, query, json_content, delimiter='.'):
+        logUtils.info('query={0}\ncontent={1}'.format(query, json_content))
+
         if not json_content:
             DictIsEmptyError("response content is empty!")
 
@@ -46,7 +50,7 @@ class ParserJsonUtil(object):
                 elif isinstance(json_content, (dict, CaseInsensitiveDict)):
                     json_content = json_content[key]
                 else:
-                    KeyNotFoundError("Query Json失败，key={0}  Json Content={1}!".format(key, json_content))
+                    KeyNotFoundError("Query Json失败，key={0}, {0}不存在！\nJson Content={1}!".format(key, json_content))
 
         except Exception as err:
             JsonFormatError(err)

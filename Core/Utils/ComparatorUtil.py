@@ -6,18 +6,22 @@ _date: 2018/12/12-下午12:53
 _desc: //ToDo
 """
 from Core.Utils.LogUtils import LogUtils
-
+from Core.Utils.RegexUtil import RegexUtil
 
 logUtils = LogUtils()
 
 
 class ComparatorUtil(object):
-    def __init__(self, _check_item, _symbol=None, _excepted=None):
+    def __init__(self, _check_item, _symbol=None, _excepted=None, _text=None):
         self._check_item = _check_item
         self._symbol = _symbol
         self._excepted = _excepted
+        self._text = _text
+
+        logUtils.debug('check_item = {0}\n\tsymbol = {1}\n\texcepted = {2}'.format(self._check_item, self._symbol, self._excepted))
 
         self._SYMBOL_MAP = {
+            "正则匹配有结果": ['regex', 're', 'match'],
             "为空": ['null', 'None', 'is null', 'False', 'false'],
             "不为空": ['not null', 'not None', 'True', 'true'],
             "不等于": ['!=', 'not equal'],
@@ -58,14 +62,13 @@ class ComparatorUtil(object):
             if not self._symbol:
                 assert self._check_item
 
-            # 期望值为空，验证要检查的内容是否为真
-            if not self._excepted:
-                assert self._check_item
-
             # 去掉比较符带有的空格
             self._symbol = self._symbol.replace(' ', '')
 
-            if self._symbol in self._SYMBOL_MAP.get("为空"):
+            if self._symbol in self._SYMBOL_MAP.get("正则匹配有结果"):
+                assert RegexUtil(_pattern=self._check_item, _text=str(self._text)).match()
+
+            elif self._symbol in self._SYMBOL_MAP.get("为空"):
                 assert not self._check_item
 
             elif self._symbol in self._SYMBOL_MAP.get("不为空"):
@@ -82,7 +85,6 @@ class ComparatorUtil(object):
 
             elif self._symbol in self._SYMBOL_MAP.get("长度不等于"):
                 assert len(self._check_item) != int(self._excepted)
-
 
             elif self._symbol in self._SYMBOL_MAP.get("等于"):
                 assert self._check_item == self._excepted
@@ -144,11 +146,19 @@ class ComparatorUtil(object):
             else:
                 logUtils.error("比较符不存在：symbol = {0}".format(self._symbol))
 
-        except Exception:
-            logUtils.error(msg="比较器验证失败：\n"
-                               "\t比较值：{0}\n\t比较符号：{1}\n"
-                               "\t期望值：{2}\n".format(self._check_item, self._symbol, self._excepted))
+        except AssertionError:
+            logUtils.error(
+                msg="比较器验证失败：\n"
+                    "\t比较值(check_item)：{0}({1})\n"
+                    "\t比较符号(symbol)：{2}\n"
+                    "\t期望值(excepted)：{3}({4}）".format(
+                self._check_item, type(self._check_item),
+                self._symbol,
+                self._excepted, type(self._excepted)))
+
+        except Exception as err:
+            logUtils.exception(err)
 
 
 if __name__ == '__main__':
-    ComparatorUtil('999', _symbol='!=', _excepted=999).check()
+    ComparatorUtil('999', _symbol='str !=', _excepted=999).check()
