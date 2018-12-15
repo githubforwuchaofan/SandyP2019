@@ -1,4 +1,4 @@
-##  Sandy_2019
+##  Sandy 2019
 #### 2019项目
 
 ## 目录结构
@@ -14,8 +14,8 @@
     
 ## 执行脚本记录
    1. pytest + allure 开始测试 && 生成测试报告
-       ###### py.test test/ --alluredir ./result/  ---- pytest执行
-       ###### allure generate ./result/ -o ./report/ --clean   ---- 生成html报告
+       py.test test/ --alluredir ./result/  ---- pytest执行
+       allure generate ./result/ -o ./report/ --clean   ---- 生成html报告
    2. pytest + pytest-html 开始测试 && 生成测试报告
-       ###### pytest DdtTest.py --html=./report/report.html -o log_cli=true -o log_cli_level=ERROR
-       ###### ps: 执行文件夹， 测试文件必须以test_开头
+       pytest DdtTest.py --html=./report/report.html -o log_cli=true -o log_cli_level=ERROR
+       ps: 执行文件夹， 测试文件必须以test_开头
